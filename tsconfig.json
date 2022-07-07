@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "es5",
+    "jsx": "react",
+    "baseUrl": "./",
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "lib": [
+      "dom"
+    ],
+    "paths": {
+      "@src/*": [
+        "src/*"
+      ],
+      "@gfe/*": [
+        "src/.gfe/*"
+      ],
+      "@core/*": [
+        "src/core/*"
+      ],
+      "@common/*": [
+        "src/core/common/*"
+      ],
+      "@components/*": [
+        "src/core/components/*"
+      ],
+      "@hooks": [
+        "src/core/hooks/index.ts"
+      ],
+      "@types": [
+        "src/.gfe/types"
+      ],
+      "@modules": [
+        "src/modules/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@globalType": [
+        "src/typings/global.d.ts"
+      ]
+    }
+  },
+  "exclude": []
+}
