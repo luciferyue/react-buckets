@@ -1,0 +1,46 @@
+{
+	"parser": "@typescript-eslint/parser",
+	"extends": [
+		"eslint:recommended",
+		"plugin:react/recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended"
+	],
+	"plugins": ["@typescript-eslint"],
+	"env": {
+		"es6": true,
+		"browser": true,
+		"node": true,
+		"jest": true,
+		"commonjs": true
+	},
+	"settings": {
+		"react": { "pragma": "React", "version": "detect" }
+	},
+	"parserOptions": {
+		"project": "./tsconfig.json",
+		"ecmaFeatures": {
+			"arrowFunctions": true,
+			"objectLiteralShorthandMethods": true,
+			"experimentalObjectRestSpread": true,
+			"jsx": true
+		},
+		"sourceType": "module"
+	},
+	"rules": {
+		"indent": [2, "tab", { "SwitchCase": 1 }],
+		"quotes": ["error", "double"],
+		"linebreak-style": [2, "unix"],
+		"no-multiple-empty-lines": [1, { "max": 2 }],
+		"@typescript-eslint/no-var-requires": "off",
+		"@typescript-eslint/no-explicit-any": "off",
+		"semi": [2, "always"],
+		"no-tabs": "off"
+	},
+	"globals": {
+		"APP_ENV": "readonly",
+		"API_URL": "readonly",
+		"DEFINE_VALUES": "readonly",
+		"PASSPORT_URL": "readonly"
+	}
+}

@@ -1,0 +1,12 @@
+.app {
+  .title {
+    font-size: 18px;
+    color: #000;
+    margin: 10px;
+    text-align: center;
+  }
+
+  .gm-button{
+    margin-bottom: 10px;
+  }
+}
