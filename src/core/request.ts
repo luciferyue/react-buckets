@@ -2,7 +2,7 @@ import platform from "gatling-utils/lib/platform";
 import http from "@utils/http";
 import { Toast } from "gatling-mobile";
 import PageError from "@core/components/page-error";
-import { updateErrorPage } from "./reducers/common.reducer";
+// import { updateErrorPage } from "./reducers/common.reducer";
 
 interface ParamsType {
 	errorLevel?: number;
@@ -60,7 +60,7 @@ export const request = async (apiUrl: string, params?: ParamsType): Promise<any>
  * @param opts
  */
 export function disposeError(err: ErrorType, opts: ParamsType): any {
-	const { errorLevel = 1, disposeError = true, dispatch } = opts;
+	const { errorLevel = 1, disposeError = true } = opts;
 	//服务器异常
 	if (err.response && err.response.status) {
 		if (err.response.status === 401) {

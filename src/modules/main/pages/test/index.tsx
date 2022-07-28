@@ -2,13 +2,12 @@ import React, { ReactElement, useEffect } from "react";
 import { Button, Dialog, Toast, ListView } from "gatling-mobile";
 import { sleep } from "gatling-mobile/es/utils/sleep";
 import { useSelector, useDispatch } from "react-redux";
-import { AppDispatch, RootState } from "@src/store";
 import * as listReducer from "../../reducers/test.reducer";
 import { fetchListType } from "../../typings/test";
 import "./index.css";
 
-export default function Test(props): ReactElement {
-	const dispatch: AppDispatch = useDispatch();
+export default function Test(): ReactElement {
+	const dispatch: RootDispatch = useDispatch();
 	
 	const list = useSelector((state: RootState) => state.testList.list);
 	

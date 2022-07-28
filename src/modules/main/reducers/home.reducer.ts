@@ -1,5 +1,4 @@
-import { createSlice, ThunkAction } from "@reduxjs/toolkit";
-import { RootState, RootThunkAction } from "@src/store";
+import { createSlice } from "@reduxjs/toolkit";
 // import { useDispatch, useSelector } from "react-redux";
 
 //初始值
@@ -19,7 +18,7 @@ export const counterSlice = createSlice({
 		sub(state, action) {
 			state.value = state.value - action.payload;
 		},
-		push(state, action) {
+		push(state) {
 			state.list.push(new Date().getTime());
 		},
 		del(state, action) {

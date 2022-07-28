@@ -1,4 +1,3 @@
-import { AppDispatch, RootState } from "@src/store";
 import React, { ReactElement, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -13,7 +12,7 @@ function PageLayout({
 	component,
 }: PageLayoutProps): ReactElement {
 	const { isInitialized, errorPage: { errorType, errorMsg } } = useSelector((state: RootState) => state.common);
-	const dispatch: AppDispatch = useDispatch();
+	const dispatch: RootDispatch = useDispatch();
 
 	useEffect(() => {
 		!isInitialized && dispatch(common.fetchInit());

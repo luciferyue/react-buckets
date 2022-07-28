@@ -1,7 +1,6 @@
 import React, { ReactElement } from "react";
 import { ListView } from "gatling-mobile";
 import { useSelector, useDispatch } from "react-redux";
-import { AppDispatch, RootState } from "@src/store";
 import * as listReducer from "../../reducers/hooks.reducer";
 import { fetchListType } from "../../typings/test";
 import "./index.css";
@@ -10,7 +9,7 @@ import http from "@utils/http/request";
 import * as api from "@src/api";
  
 export default function Test(): ReactElement {
-	const dispatch: AppDispatch = useDispatch();
+	const dispatch: RootDispatch = useDispatch();
 	const list = useSelector((state: RootState) => state.hooksList.list);
 	
 	const { has_next, data_list, page_no } = list;
@@ -19,7 +18,7 @@ export default function Test(): ReactElement {
 		const [type, url] = api.fetchList.split(" ");
 		return http.request(type === "POST" ? "POST" : "GET", { url, apiParam: { page_no: 1, page_size: 20, ...apiParams } });
 	};
-	const { run, data } = useMyRequest(getList, {
+	const { run } = useMyRequest(getList, {
 		defaultParams: [{ apiParams: { page_no: 1, page_size: 20 } }],
 		onSuccess: (res, param) => {
 			const result = { ...res };

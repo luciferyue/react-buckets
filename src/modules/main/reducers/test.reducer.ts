@@ -1,6 +1,5 @@
-import { createSlice, ThunkAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { request } from "@src/core/request";
-import { RootState, RootThunkAction } from "@src/store";
 import * as api from "@src/api";
 import { Toast } from "gatling-mobile";
 import { fetchListType, ListType } from "../typings/test";
@@ -21,7 +20,6 @@ export const testListSlice = createSlice({
 	//1.定义更新函数，2.组件中dispatch使用的actions函数
 	reducers: { //内置了一个immutable.js插件，状态不可变
 		receive(state, action) {
-
 			const data_list =
 				action.payload.page_no === 1
 					? action.payload.data_list

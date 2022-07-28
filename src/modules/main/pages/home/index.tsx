@@ -4,10 +4,9 @@ import * as counter from "../../reducers/home.reducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "./index.css";
-import { AppDispatch, RootState } from "@src/store";
 
 function MainHome():ReactElement {
-	const dispatch: AppDispatch = useDispatch();
+	const dispatch: RootDispatch = useDispatch();
 	const { value, list } = useSelector((state: RootState) => state.counter);
 	const navigate = useNavigate();
 	return (

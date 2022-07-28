@@ -1,10 +1,10 @@
 import React, { ReactElement, Suspense } from "react";
 import {
 	BrowserRouter,
-	Routes,
-	Route,
-	Navigate,
-	Outlet,
+	// Routes,
+	// Route,
+	// Navigate,
+	// Outlet,
 	useRoutes
 } from "react-router-dom";
 import Test from "@src/modules/main/pages/test";
