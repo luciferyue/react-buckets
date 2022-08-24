@@ -13,11 +13,13 @@ export default function Test(): ReactElement {
 	const list = useSelector((state: RootState) => state.hooksList.list);
 	
 	const { has_next, data_list, page_no } = list;
+	
 	const getList = (param?: fetchListType) => {
 		const { apiParams } = param;
 		const [type, url] = api.fetchList.split(" ");
 		return http.request(type === "POST" ? "POST" : "GET", { url, apiParam: { page_no: 1, page_size: 20, ...apiParams } });
 	};
+
 	const { run } = useMyRequest(getList, {
 		defaultParams: [{ apiParams: { page_no: 1, page_size: 20 } }],
 		onSuccess: (res, param) => {

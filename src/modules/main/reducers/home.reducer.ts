@@ -1,8 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-// import { useDispatch, useSelector } from "react-redux";
+
+interface counterSliceType {
+	value: number;
+	list: number[]
+}
 
 //初始值
-const initialState = {
+const initialState: counterSliceType = {
 	value: 0,
 	list: []
 };
@@ -21,13 +25,13 @@ export const counterSlice = createSlice({
 		push(state) {
 			state.list.push(new Date().getTime());
 		},
-		del(state, action) {
-			state.list.splice(action.payload, 1);
+		del(state) {
+			state.list.splice(0, 1);
 		}
 	}
 });
 //快捷获取store
-// export const selectCount = (state: RootState) => state.counter;
+export const selectCount = (state: RootState): counterSliceType => state.counter;
 
 // 导出action函数,
 export const { add, sub, push, del } = counterSlice.actions;
@@ -40,6 +44,6 @@ export const subAsync = (): RootThunkAction => async (dispatch) => {
 
 function fetchCount(amount = 2) {
 	return new Promise((resolve) =>
-		setTimeout(() => resolve({ data: amount }), 500)
+		setTimeout(() => resolve({ data: amount }), 1500)
 	);
 }

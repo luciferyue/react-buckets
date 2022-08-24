@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ListType } from "../typings/test";
-// import { useDispatch, useSelector } from "react-redux";
 
 //初始值
 const initialState: ListType = {

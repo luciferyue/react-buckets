@@ -1,6 +1,5 @@
 import { useRequest } from "ahooks";
 import { Service, Options, Plugin, Result } from "ahooks/es/useRequest/src/types";
-// import { } from "ahooks/es/useRequest/src/types";
 import { disposeError } from "@src/core/request";
 import { Toast } from "gatling-mobile";
 
@@ -32,5 +31,6 @@ export function useMyRequest<TData, TParams extends any[]>(
 			options.onFinally?.(params, data, e);
 		},
 	}, plugins);
+
 	return _actions;
 }

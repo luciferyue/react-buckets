@@ -92,7 +92,7 @@ export function disposeError(err: ErrorType, opts: ParamsType): any {
 		}
 	} else {
 		// dispatch(updateErrorPage({ errorType: 2, errorMsg: err.msg }));
-		PageError.showPageError({ errorType: 2, errorMsg: err.msg });
+		PageError.showPageError({ errorType: 1, errorMsg: err.msg });
 	}
 }
 
