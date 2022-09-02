@@ -2,24 +2,21 @@ import React, { ReactElement, useEffect } from "react";
 import { Button, Dialog, Toast, ListView } from "gatling-mobile";
 import { sleep } from "gatling-mobile/es/utils/sleep";
 import { useSelector, useDispatch } from "react-redux";
-import * as listReducer from "../../reducers/test.reducer";
+import { getList } from "../../servers";
+import { testListActions } from "../../reducers/test.reducer";
 import { fetchListType } from "../../typings/test";
 import "./index.css";
+import { useHistory } from "@src/core/hooks";
 
 export default function Test(): ReactElement {
 	const dispatch: RootDispatch = useDispatch();
+	const { push } = useHistory();
 	
-	const list = useSelector((state: RootState) => state.testList.list);
-	
-	const { has_next, data_list, page_no } = list;
-	
+	const { has_next, data_list, page_no } = useSelector((state: RootState) => state.case.testList);
 	const fetchList = async (params?: fetchListType) => {
-		// dispatch内部传入
-		// dispatch(listReducer.getListAsync(params));
-
-		//直接请求，返回数据或者 undefined
-		const data = await listReducer.getList(params, !data_list);
-		data && dispatch(listReducer.receive(data));
+		//直接请求，返回数据或者 undefined 第二种
+		const data = await getList(params, !data_list);
+		data && dispatch(testListActions.receive(data));
 	};
 	useEffect(() => {
 		fetchList();
@@ -66,18 +63,25 @@ export default function Test(): ReactElement {
 	};
 	return (
 		<>
-			<Button onClick={showToast}>toast</Button>
-			<br />
-			<Button onClick={showLoading}>loading</Button>
-			<br />
-			<Button onClick={showDialog}>dialog</Button>
-			<ListView
-				renderItem={renderItem}
-				data={data_list}
-				onRefresh={(done) => fetchList({ done })}
-				hasMore={has_next}
-				onLoadMore={(done) => fetchList({ done, apiParams: { page_no: page_no + 1 } })}
-			/>
+			<div>
+				<Button onClick={() => push("/test")}>跳转</Button>
+				<br />
+				<Button onClick={showToast}>toast</Button>
+				<br />
+				<Button onClick={showLoading}>loading</Button>
+			</div>
+			<div className="vertical-scroll">
+				<ListView
+					renderItem={renderItem}
+					data={data_list}
+					onRefresh={(done) => fetchList({ done })}
+					hasMore={has_next}
+					onLoadMore={(done) => fetchList({ done, apiParams: { page_no: page_no + 1 } })}
+				/>
+			</div>
+			<div>
+				<Button onClick={showDialog}>dialog</Button>
+			</div>
 		</>
 	);
 }

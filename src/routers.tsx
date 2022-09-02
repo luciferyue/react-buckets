@@ -1,30 +1,24 @@
 import React, { ReactElement, Suspense, lazy } from "react";
 import {
-	BrowserRouter,
-	// Routes,
-	// Route,
+	Routes,
+	Route,
 	// Navigate,
 	// Outlet,
 	useRoutes
 } from "react-router-dom";
-// import Test from "@src/modules/main/pages/test";
-// import Home from "@src/modules/main/pages/home";
-// import Request from "@src/modules/main/pages/use-request";
+// import Test from "@src/modules/case/pages/test";
+// import Test2 from "@src/modules/case/pages/test2";
 import PageError from "./core/components/page-error/result";
-
-const Test = lazy(() => import("@src/modules/main/pages/test"));
-const Home = lazy(() => import("@src/modules/main/pages/home"));
-const Request = lazy(() => import("@src/modules/main/pages/use-request"));
-
-import PageLayout from "@core/components/page-layout";
+const Test = lazy(() => import("@src/modules/case/pages/test"));
+const Test2 = lazy(() => import("@src/modules/case/pages/test2"));
+import PageLayout from "@src/core/components/page-wrapper";
 
 
 function router(): ReactElement {
 	return (
 		<Suspense fallback={<></>}>
-			<BrowserRouter basename="/">
-				<GetRouter />
-			</BrowserRouter>
+			<GetRouter />
+			{/* <GetRouter2 /> */}
 		</Suspense>
 	);
 }
@@ -32,26 +26,61 @@ function router(): ReactElement {
 function GetRouter() {
 	const element = useRoutes([
 		{
-			path: "/",
-			element: <PageLayout key={"router-/"} component={<Home />} />
-		},
-		{
 			path: "/test",
-			element: <PageLayout key={"router-test"} component={<Test />} />
+			element: <PageLayout key={"router-test"} title="1案例页面" component={Test} />
 		},
 		{
-			path: "/hooks",
-			element: <PageLayout key={"router-test"} component={<Request />} />
+			path: "/test2",
+			element: <PageLayout key={"router-test2"} title="2案例页面" flex component={Test2} />
 		},
 		{
 			path: "*",
 			element: <PageError key={"router-*"} />
 		},
 	]);
-	console.log(element);
-	
 	return element;
 }
+
+//是否考虑嵌套路由
+function GetRouter2() {
+	return (
+		<Routes>
+			{routesConfig.routes.map((route, index) => {
+				const { path, ...res } = route;
+				return (
+					<Route
+						key={`route-${index}`}
+						path={path}
+						element={<PageLayout {...res} />}
+					/>
+				);
+			})}
+			<Route path="*" element={<PageError key={"router-*"} />} />
+		</Routes>
+	);
+}
+
+const routesConfig = {
+	"wrapper": require("@components/page-wrapper").default,
+	"empty": require("@components/page-error").default,
+	"routes": [
+		{
+			path: "/test",
+			module: "main",
+			page: "test",
+			title: "1案例页面",
+			component: lazy(() => import("@src/modules/case/pages/test")),
+		},
+		{
+			path: "/test2",
+			module: "main",
+			page: "home",
+			title: "2案例页面",
+			flex: true,
+			component: lazy(() => import("@src/modules/case/pages/test2")),
+		}
+	],
+};
 
 
 export default router;

@@ -6,9 +6,15 @@ import store from "../store";
 export type RefType = RefObject<HTMLElement>;
 
 declare global {
-	interface Window {}
+	interface Window {
+		GATBridge: any;
+		addHistoryListener: any;
+	}
 	interface location { }
 	type RootState = ReturnType<typeof store.getState>;
 	type RootDispatch = typeof store.dispatch;
-	type RootThunkAction = ThunkAction<void, RootState, unknown, any>;
+	type RootThunkAction<S = void> = ThunkAction<S, RootState, unknown, any>;
+	interface RootAsyncAction<T = unknown, S = void> {
+		(payload?: T): RootThunkAction<Promise<S>>
+	}
 }

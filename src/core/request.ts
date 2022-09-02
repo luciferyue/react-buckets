@@ -1,114 +1,108 @@
+import http, { ApiParamsType, MethodType } from "@utils/http";
 import platform from "gatling-utils/lib/platform";
-import http from "@utils/http";
-import { Toast } from "gatling-mobile";
 import PageError from "@core/components/page-error";
-// import { updateErrorPage } from "./reducers/common.reducer";
+import { Toast } from "gatling-mobile";
 
-interface ParamsType {
-	errorLevel?: number;
-	disposeError?: boolean;
-	apiParam?: unknown;
-	dispatch?: any;
-	contentType?: string;
+interface RequestType {
+	(
+		apiUrl: string,
+		params?: ApiParamsType,
+		opts?: {
+			disposeError?: boolean,
+			contentType?: string
+			errorLevel?: number
+		}
+	):  Promise<any>
 }
 
-interface ErrorType {
-	code: number;
-	msg: string;
-	response?: {
-		status: number;
-	};
-	timeout?: boolean;
+interface DisposeErrorHandleType {
+	(
+		err: {
+			response?: {
+				status?: number
+			},
+			timeout?: boolean,
+			message?: string,
+			msg?: string
+		},
+		disposeError: boolean,
+		errorLevel?: number
+	): any
 }
 
-export const request = async (apiUrl: string, params?: ParamsType): Promise<any> => {
-	const [type, url] = apiUrl.split(" ");
-	const opts: ParamsType = {
-		errorLevel: 1, //1:toast处理  2：页面级抛错处理
+
+const request: RequestType = async (apiUrl, params, opts = {}) => {
+	const { disposeError, contentType, errorLevel } = {
+		errorLevel: 1,//1:toast处理  2：页面级抛错处理
 		disposeError: true,
-		apiParam: null, //接口参数
-		...params,
+		contentType: "application/json",
+		...opts
 	};
+	const [method, url] = apiUrl.split(" ");
 	try {
-		const response: any = await http.request(type === "POST" ? "POST" : "GET", { ...opts, url });
+		const response = await http.request(method as MethodType, { apiParam: params, contentType, url });
 		const { status, data } = response;
+
 		if (status === 200) {
 			const { code, msg } = data;
 			if (code === 0) {
 				// 业务正常
 				return data.data;
-			} else if (code === 1167500005) {
-				//未登录
-				throw {
-					response: {
-						status: 401,
-					},
-				};
+			} else if (code === 1205310000) {
+				//特殊未登录，默认要求后端response.status 直接返回401
+				throw { response: { status: 401 } };
 			} else {
-				throw { code, msg };
+				throw { code, msg, response };
 			}
 		}
 	} catch (err) {
-		disposeError(err, opts);
-		throw err;
+		throw await disposeErrorHandle(err, disposeError, errorLevel);
 	}
 };
 
-/**
- *
- * @param err 通用果错误处理
- * @param opts
- */
-export function disposeError(err: ErrorType, opts: ParamsType): any {
-	const { errorLevel = 1, disposeError = true } = opts;
-	//服务器异常
-	if (err.response && err.response.status) {
+
+const disposeErrorHandle: DisposeErrorHandleType = async (err, disposeError, errorLevel = 1) => {
+	if (err.response && err.response.status !== 200) {
 		if (err.response.status === 401) {
-			disposeLoginFailure();
+			if (platform.isNativeApp()) {
+				// eslint-disable-next-line @typescript-eslint/no-empty-function
+				window.GATBridge && window.GATBridge.call("nativeAuthorizationFailure", { need_refresh_page: "2" }, function () { });
+			} else {
+				window.location.href = `${PASSPORT_URL}?redirect_url=${encodeURIComponent(window.location.href)} `;
+			}
+
 		} else {
 			if (errorLevel === 1) {
-				showToast("出错了");
+				Toast.show("出错了");
 			} else {
-				// dispatch(updateErrorPage(1));
 				PageError.showPageError(1);
+				// dispatch(errorStatusActions.update({ type: 1 }));
 			}
 		}
 	}
 
 	//网络异常
-	if (err.timeout) {
+	if (err.timeout || err.message === "Network Error") {
 		if (errorLevel === 1) {
-			showToast("网络异常");
+			Toast.show("网络异常");
 		} else {
-			// dispatch(updateErrorPage(2));
 			PageError.showPageError(2);
 		}
 	}
 
+
 	//业务异常
 	if (errorLevel === 1) {
 		if (disposeError) {
-			showToast(err.msg || "默认显示出错了");
+			Toast.show(err.msg || "出错了");
 		}
 	} else {
-		// dispatch(updateErrorPage({ errorType: 2, errorMsg: err.msg }));
-		PageError.showPageError({ errorType: 1, errorMsg: err.msg });
+		PageError.showPageError({ type: 1, msg: err.msg });
 	}
-}
 
-function disposeLoginFailure() {
-	if (platform.isNativeApp()) {
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		GATBridge && GATBridge.call("nativeAuthorizationFailure", { need_refresh_page: "2" }, function () {});
-	} else {
-		window.location.href = `${PASSPORT_URL}?redirect_url=${encodeURIComponent(window.location.href)}`;
-	}
-}
+	//不需要处理的时候抛出异常
+	return err;
+};
 
-// toast
-export function showToast(msg: string, cb?: () => void): void {
-	Toast.show({
-		content: msg,
-		onClose: cb,
-	});
-}
+
+export default request;

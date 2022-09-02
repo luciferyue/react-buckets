@@ -1,77 +1,61 @@
 import axios from "axios";
 import qs from "qs";
-import { sign } from "./sign";
-import "./dev-tools";
+// import "./dev-tools";
 
-type Channel = "common" | "wechat";
-type PlatformName = "browser" | "wechat" | "giveapp" | "wxwork" | "oldapp";
+type HeadersType = {
+	Accept: string,
+	platform: string,
+	channel: string,
+	version: string,
+}
 
-type HeaderParams = {
-	channel: Channel;
-	platform: PlatformName;
-	version: string;
-	Accept: string;
-	"Access-Control-Allow-Origin": string;
-	"Content-Type"?: string;
-};
+export type ApiParamsType = {
+	[key: string]: any
+}
 
-type Method = "GET" | "POST";
+export interface OptsType<T> {
+	url: string,
+	contentType: string,
+	apiParam?: T
+}
 
-type HttpOptions = {
-	url: string;
-	params?: any;
-	contentType?: string;
-};
+export type MethodType = "GET" | "POST";
+
 
 class HttpManager {
-	private headers: HeaderParams;
-	appSecret;
 
-	constructor() {
-		this.headers = {
-			Accept: "application/json",
-			platform: "browser",
-			channel: "common",
-			version: "1.0.0",
-			"Access-Control-Allow-Origin": window.location.href,
-		};
-	}
+	headers: HeadersType = {
+		Accept: "application/json",
+		platform: "browser",
+		channel: "common",
+		version: "1.0.0",
+	};
 
-	init(options) {
-		const { appSecret } = options;
-		this.appSecret = appSecret.key;
-	}
-
-	async request(method: Method = "GET", options) {
+	async request(method: MethodType = "GET", options: OptsType<ApiParamsType>) {
 		const { url, apiParam, contentType } = options;
-		const signParams = apiParam || {};
-		let signedObj = { ...signParams, sign: sign(signParams, this.appSecret) };
+		let signParams = apiParam || {};
+
 		let apiUrl = url;
 
 		if (method === "GET") {
-			const paramsString = qs.stringify(signedObj);
-			apiUrl = `${url}${paramsString ? "?" + paramsString : ""}`;
+			const paramsString = qs.stringify(signParams);
+			if (paramsString) {
+				apiUrl = `${url}?${paramsString}`;
+			}
 
-			signedObj = {};
+			signParams = {};
 		}
-		const params = contentType ? signedObj : qs.stringify(signedObj);
-		
+
 		return axios.request({
 			method,
-			headers: { ...this.headers, timestamp: Math.round(new Date().getTime()), "Content-Type": contentType || "application/x-www-form-urlencoded" },
+			headers: { ...this.headers, timestamp: Math.round(new Date().getTime()), "Content-Type": contentType || "application/json" },
 			url: apiUrl,
-			data: params,
+			data: signParams,
 			withCredentials: true,
 		});
 	}
-
-	get(options: HttpOptions) {
-		return this.request("GET", options);
-	}
-
-	post(options: HttpOptions) {
-		return this.request("POST", options);
-	}
 }
 
-export default new HttpManager();
+const http = new HttpManager();
+
+export default http;

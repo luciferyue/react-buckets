@@ -3,11 +3,13 @@ import Result from "gatling-mobile/es/components/Result";
 import "./index.css";
 
 export interface PageErrorProps {
-	errorMsg?: string;
-	errorType?: number;
+	msg?: string;
+	type?: number;
 	className?: string;
+	history?: any;
 }
-function PageError({ errorType = 404, errorMsg, className }: PageErrorProps): ReactElement {
+function PageError({ type = 404, msg, className, history }: PageErrorProps): ReactElement {
+	
 	const onClickRefresh = (): void => {
 		window.location.reload();
 	};
@@ -15,12 +17,14 @@ function PageError({ errorType = 404, errorMsg, className }: PageErrorProps): Re
 		window.history.go(-1);
 	};
 	const config = useMemo(() => {
-		switch (errorType) {
+		switch (type) {
 			case 1: //通用出错了
 			default:
 				return {
 					type: "error",
-					title: errorMsg || "出错了",
+					title: msg || "出错了",
+					onBtnClick: onClickGoBack,
+					btnText: "返回",
 				};
 			case 2: //网络超时
 				return {
@@ -38,7 +42,7 @@ function PageError({ errorType = 404, errorMsg, className }: PageErrorProps): Re
 					message: "页面不存在",
 				};
 		}
-	}, [errorType, errorMsg]);
+	}, [type, msg]);
 
 	return (
 		<Result className={className} {...config} />

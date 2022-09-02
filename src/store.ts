@@ -1,16 +1,17 @@
-// 创建store
 import { configureStore } from "@reduxjs/toolkit";
-import { commonSlice } from "@src/core/reducers/common.reducer";
-import { counterSlice } from "@src/modules/main/reducers/home.reducer";
-import { testListSlice } from "@src/modules/main/reducers/test.reducer";
-import { hooksListSlice } from "@src/modules/main/reducers/hooks.reducer";
+import { combineReducers } from "redux";
+import commonReducer from "@src/core/reducers/common.reducer";
+import testListReducer from "@src/modules/case/reducers/test.reducer";
 
+// 创建store
 const store = configureStore({
 	reducer: {
-		common: commonSlice.reducer,
-		counter: counterSlice.reducer,
-		testList: testListSlice.reducer,
-		hooksList: hooksListSlice.reducer,
+		core: combineReducers({
+			...commonReducer
+		}),
+		case: combineReducers({
+			...testListReducer
+		}),
 	}
 });
 
