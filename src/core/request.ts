@@ -1,4 +1,5 @@
-import http, { ApiParamsType, MethodType } from "@utils/http";
+import http, { ApiParamsType } from "@utils/http";
+import { AxiosRequestHeaders } from "axios";
 import platform from "gatling-utils/lib/platform";
 import PageError from "@core/components/page-error";
 import { Toast } from "gatling-mobile";
@@ -6,11 +7,11 @@ import { Toast } from "gatling-mobile";
 interface RequestType {
 	(
 		apiUrl: string,
-		params?: ApiParamsType,
 		opts?: {
-			disposeError?: boolean,
-			contentType?: string
-			errorLevel?: number
+			apiParam?: ApiParamsType;
+			disposeError?: boolean;
+			errorLevel?: number;
+			headers?: AxiosRequestHeaders;
 		}
 	):  Promise<any>
 }
@@ -31,29 +32,21 @@ interface DisposeErrorHandleType {
 }
 
 
-const request: RequestType = async (apiUrl, params, opts = {}) => {
-	const { disposeError, contentType, errorLevel } = {
+const request: RequestType = async (apiUrl, opts = {}) => {
+	const { disposeError, errorLevel, apiParam, headers } = {
 		errorLevel: 1,//1:toast处理  2：页面级抛错处理
 		disposeError: true,
-		contentType: "application/json",
 		...opts
 	};
-	const [method, url] = apiUrl.split(" ");
 	try {
-		const response = await http.request(method as MethodType, { apiParam: params, contentType, url });
-		const { status, data } = response;
-
-		if (status === 200) {
-			const { code, msg } = data;
-			if (code === 0) {
-				// 业务正常
-				return data.data;
-			} else if (code === 1205310000) {
-				//特殊未登录，默认要求后端response.status 直接返回401
-				throw { response: { status: 401 } };
-			} else {
-				throw { code, msg, response };
-			}
+		const res = await http.request(apiUrl, apiParam, headers);
+		const { code, data } = res;
+		if (code === 0) {
+			// 业务正常
+			return data;
+		} else if (code === 1205310000) {
+			//未登录
+			throw { response: { status: 401 } };
 		}
 	} catch (err) {
 		throw await disposeErrorHandle(err, disposeError, errorLevel);

@@ -3,7 +3,6 @@ import ReactDom from "react-dom";
 import PageError, { PageErrorProps } from "./result";
 import { mergeProps, resolveContainer } from "gatling-mobile/es/utils";
 import { createBrowserHistory } from "history";
-import { addHistoryMethod } from "@utils/listen";
 
 const _containersPageError = [] as HTMLDivElement[];
 
@@ -52,7 +51,7 @@ export function showPageError(p: PropType | number): void {
 			};
 		}, []);
 
-		return <PageError history={history} {..._props} />;
+		return <PageError  {..._props} />;
 	};
 
 	ReactDom.render(<Tem />, container);

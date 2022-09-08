@@ -1,6 +1,10 @@
 const { gfeConfig } = require("@gfejs/devtools");
+const routers = require("./router.config");
 
 module.exports = gfeConfig(() => ({
+	useCore: {
+		routers
+	},
 	// 是否是ts应用
 	useTs: true,
 	useAnalyzer: true,

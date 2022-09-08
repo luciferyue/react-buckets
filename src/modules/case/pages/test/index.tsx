@@ -57,7 +57,7 @@ export default function Test(): ReactElement {
 				{
 					text: "确定", onPress: (res?: () => void) => {
 						push("/test2");
-						// res?.();
+						res?.();
 					} }
 			]
 		});
@@ -68,6 +68,8 @@ export default function Test(): ReactElement {
 	if(!data_list) return null;
 	return (
 		<>
+			<Button onClick={() => push("/test2")}>这是-----1跳转</Button>
+			<br />
 			<Button onClick={showToast}>toast</Button>
 			<br />
 			<Button onClick={showLoading}>loading</Button>

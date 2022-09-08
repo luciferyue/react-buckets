@@ -3,10 +3,12 @@ import React, { ReactElement, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchInit } from "../../servers/common";
 import { useLocation } from "react-router-dom";
+import "./index.css";
 
 type IProp = {
 	component: any;
 	title?: string;
+	trick_title?: string;
 	flex?: boolean;
 }
 
@@ -20,6 +22,7 @@ export default function PageWrapper({ component: WrappedComponent, title, flex =
 	}, []);
 
 	useEffect(() => {
+		console.log(location.pathname,title);
 		document.title = title;
 	}, [location.pathname]);
 	

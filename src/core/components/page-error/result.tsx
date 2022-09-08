@@ -6,10 +6,8 @@ export interface PageErrorProps {
 	msg?: string;
 	type?: number;
 	className?: string;
-	history?: any;
 }
-function PageError({ type = 404, msg, className, history }: PageErrorProps): ReactElement {
-	
+function PageError({ type = 404, msg, className }: PageErrorProps): ReactElement {
 	const onClickRefresh = (): void => {
 		window.location.reload();
 	};
@@ -37,8 +35,6 @@ function PageError({ type = 404, msg, className, history }: PageErrorProps): Rea
 			case 404: //页面不存在
 				return {
 					type: "empty",
-					btnText: "返回",
-					onBtnClick: onClickGoBack,
 					message: "页面不存在",
 				};
 		}
